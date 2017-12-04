@@ -17,8 +17,8 @@ import android.util.Log;
 
 import com.asksven.android.common.NonRootShell;
 import com.asksven.android.common.RootShell;
+import com.asksven.android.common.privateapiproxies.ProcessStat;
 import com.asksven.android.common.privateapiproxies.StatElement;
-import com.asksven.android.common.privateapiproxies.Process;
 import com.asksven.android.common.utils.DateUtils;
 import com.asksven.android.common.utils.SysUtils;
 
@@ -64,14 +64,14 @@ public class ProcessStatsDumpsys
 			
 		}
 
-		HashMap<String, List<Process>> xrefUserNames = getProcesses(res);
+		HashMap<String, List<ProcessStat>> xrefUserNames = getProcesses(res);
 
 		// go through the processes and set the proper uid
 		Iterator<String> userNames = xrefUserNames.keySet().iterator();
 		while (userNames.hasNext())
 		{
 			String userName = userNames.next();
-			List<Process> procs = xrefUserNames.get(userName);
+			List<ProcessStat> procs = xrefUserNames.get(userName);
 			int uid = -1;
 			if (!userName.equals(""))
 			{
@@ -88,7 +88,7 @@ public class ProcessStatsDumpsys
 			
 			for (int i=0; i < procs.size(); i++)
 			{
-				Process proc = procs.get(i);
+				ProcessStat proc = procs.get(i);
 				if (uid == -1)
 				{
 					String packageName = proc.getName();
@@ -150,9 +150,9 @@ public class ProcessStatsDumpsys
 		return myRet;
 	}
 	
-	protected static HashMap<String, List<Process>> getProcesses(List<String> res)
+	protected static HashMap<String, List<ProcessStat>> getProcesses(List<String> res)
 	{
-		HashMap<String, List<Process>> xref = new HashMap<String, List<Process>>();
+		HashMap<String, List<ProcessStat>> xref = new HashMap<String, List<ProcessStat>>();
 				
 		final String START_PATTERN = "Statistics since last charge";
 		final String STOP_PATTERN = "Statistics since last unplugged";
@@ -189,11 +189,11 @@ public class ProcessStatsDumpsys
 						// add whatever was not saved yet
 						if (!user.equals("") && !process.equals(""))
 						{
-							Process myProc = new Process(process, userCpu, systemCpu, starts);
-							List<Process> myList = xref.get(user);
+							ProcessStat myProc = new ProcessStat(process, userCpu, systemCpu, starts);
+							List<ProcessStat> myList = xref.get(user);
 							if (myList == null)
 							{
-								myList = new ArrayList<Process>();
+								myList = new ArrayList<ProcessStat>();
 								xref.put(user, myList);
 							}
 								myList.add(myProc);
@@ -213,11 +213,11 @@ public class ProcessStatsDumpsys
 						// check if we had detected something previously
 						if (!user.equals("") && !process.equals(""))
 						{
-							Process myProc = new Process(process, userCpu, systemCpu, starts);
-							List<Process> myList = xref.get(user);
+							ProcessStat myProc = new ProcessStat(process, userCpu, systemCpu, starts);
+							List<ProcessStat> myList = xref.get(user);
 							if (myList == null)
 							{
-								myList = new ArrayList<Process>();
+								myList = new ArrayList<ProcessStat>();
 								xref.put(user, myList);
 							}
 								myList.add(myProc);
@@ -234,11 +234,11 @@ public class ProcessStatsDumpsys
 						// check if we had detected something previously
 						if (!user.equals("") && !process.equals(""))
 						{
-							Process myProc = new Process(process, userCpu, systemCpu, starts);
-							List<Process> myList = xref.get(user);
+							ProcessStat myProc = new ProcessStat(process, userCpu, systemCpu, starts);
+							List<ProcessStat> myList = xref.get(user);
 							if (myList == null)
 							{
-								myList = new ArrayList<Process>();
+								myList = new ArrayList<ProcessStat>();
 								xref.put(user, myList);
 							}
 								myList.add(myProc);

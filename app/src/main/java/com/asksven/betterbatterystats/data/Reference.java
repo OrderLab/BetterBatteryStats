@@ -15,13 +15,6 @@
  */
 package com.asksven.betterbatterystats.data;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -43,15 +36,15 @@ import com.asksven.android.common.dto.StateDto;
 import com.asksven.android.common.dto.WakelockDto;
 import com.asksven.android.common.privateapiproxies.NativeKernelWakelock;
 import com.asksven.android.common.kernelutils.State;
-import com.asksven.android.common.privateapiproxies.Alarm;
+import com.asksven.android.common.privateapiproxies.AlarmStat;
 import com.asksven.android.common.privateapiproxies.Misc;
 import com.asksven.android.common.privateapiproxies.NetworkUsage;
+import com.asksven.android.common.privateapiproxies.ProcessStat;
 import com.asksven.android.common.privateapiproxies.SensorUsage;
 import com.asksven.android.common.privateapiproxies.StatElement;
-import com.asksven.android.common.privateapiproxies.Process;
+import com.asksven.android.common.privateapiproxies.WakelockStat;
 import com.asksven.android.common.utils.DateUtils;
 import com.asksven.betterbatterystats.LogSettings;
-import com.asksven.android.common.privateapiproxies.Wakelock;
 
 /**
  * A serializable value holder for stat references 
@@ -108,7 +101,7 @@ public class Reference implements Serializable
 	protected long m_creationTime							= 0;
 	protected int m_refType									= 0;
 	protected String m_refLabel								= "";
-	@JsonDeserialize(contentAs = Wakelock.class)
+	@JsonDeserialize(contentAs = WakelockStat.class)
     protected ArrayList<StatElement> m_refWakelocks 		= null;
 	
 	@JsonDeserialize(contentAs = NativeKernelWakelock.class)
@@ -117,7 +110,7 @@ public class Reference implements Serializable
 	@JsonDeserialize(contentAs = NetworkUsage.class)
     protected ArrayList<StatElement> m_refNetworkStats	 	= null;
 	
-	@JsonDeserialize(contentAs = Alarm.class)
+	@JsonDeserialize(contentAs = AlarmStat.class)
     protected ArrayList<StatElement> m_refAlarms		 	= null;
 	
 	@JsonDeserialize(contentAs = Process.class)
@@ -161,7 +154,7 @@ public class Reference implements Serializable
 			this.m_refAlarms = new ArrayList<StatElement>();
 			for (int i=0; i < source.m_refAlarms.size(); i++)
 			{
-				this.m_refAlarms.add(new Alarm(source.m_refAlarms.get(i)));
+				this.m_refAlarms.add(new AlarmStat(source.m_refAlarms.get(i)));
 			}
 		}
 
@@ -206,7 +199,7 @@ public class Reference implements Serializable
 			this.m_refProcesses = new ArrayList<StatElement>();
 			for (int i=0; i < source.m_refProcesses.size(); i++)
 			{
-				this.m_refProcesses.add(new Process(source.m_refProcesses.get(i)));
+				this.m_refProcesses.add(new ProcessStat(source.m_refProcesses.get(i)));
 			}
 		}
 
@@ -215,7 +208,7 @@ public class Reference implements Serializable
 			this.m_refWakelocks = new ArrayList<StatElement>();
 			for (int i=0; i < source.m_refWakelocks.size(); i++)
 			{
-				this.m_refWakelocks.add(new Wakelock(source.m_refWakelocks.get(i)));
+				this.m_refWakelocks.add(new WakelockStat(source.m_refWakelocks.get(i)));
 			}
 		}
 
@@ -261,7 +254,7 @@ public class Reference implements Serializable
 			ret.m_refAlarms = new ArrayList<AlarmDto>();
 			for (int i=0; i < this.m_refAlarms.size(); i++)
 			{
-				ret.m_refAlarms.add(((Alarm) this.m_refAlarms.get(i)).toDto());
+				ret.m_refAlarms.add(((AlarmStat) this.m_refAlarms.get(i)).toDto());
 			}
 		}
 
@@ -306,7 +299,7 @@ public class Reference implements Serializable
 			ret.m_refProcesses = new ArrayList<ProcessDto>();
 			for (int i=0; i < this.m_refProcesses.size(); i++)
 			{
-				ret.m_refProcesses.add(((Process) this.m_refProcesses.get(i)).toDto());
+				ret.m_refProcesses.add(((ProcessStat) this.m_refProcesses.get(i)).toDto());
 			}
 		}
 
@@ -315,7 +308,7 @@ public class Reference implements Serializable
 			ret.m_refWakelocks = new ArrayList<WakelockDto>();
 			for (int i=0; i < this.m_refWakelocks.size(); i++)
 			{
-				ret.m_refWakelocks.add(((Wakelock) this.m_refWakelocks.get(i)).toDto());
+				ret.m_refWakelocks.add(((WakelockStat) this.m_refWakelocks.get(i)).toDto());
 			}
 		}
 

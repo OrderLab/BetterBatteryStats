@@ -30,5 +30,6 @@ public class UidInfoDto implements Serializable
 	@JsonProperty("name") public String m_uidName = "";
 	@JsonProperty("package")public String m_uidNamePackage = "";
 	@JsonProperty("unique") public boolean m_uidUniqueName = false;
+	@JsonProperty("version") public String m_uidVersion = "";
 	
 }

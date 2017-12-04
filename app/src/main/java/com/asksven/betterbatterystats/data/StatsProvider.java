@@ -40,6 +40,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.asksven.android.common.privateapiproxies.AlarmStat;
+import com.asksven.android.common.privateapiproxies.ProcessStat;
+import com.asksven.android.common.privateapiproxies.WakelockStat;
 import com.asksven.android.contrib.Util;
 import com.asksven.android.common.CommonLogSettings;
 import com.asksven.android.common.RootShell;
@@ -51,7 +54,6 @@ import com.asksven.android.common.kernelutils.State;
 import com.asksven.android.common.kernelutils.Wakelocks;
 import com.asksven.android.common.kernelutils.WakeupSources;
 import com.asksven.android.common.kernelutils.WakeupSourcesLg;
-import com.asksven.android.common.privateapiproxies.Alarm;
 import com.asksven.android.common.privateapiproxies.BatteryInfoUnavailableException;
 import com.asksven.android.common.privateapiproxies.BatteryStatsProxy;
 import com.asksven.android.common.privateapiproxies.BatteryStatsTypes;
@@ -60,10 +62,8 @@ import com.asksven.android.common.privateapiproxies.Misc;
 import com.asksven.android.common.privateapiproxies.NativeKernelWakelock;
 import com.asksven.android.common.privateapiproxies.NetworkUsage;
 import com.asksven.android.common.privateapiproxies.Notification;
-import com.asksven.android.common.privateapiproxies.Process;
 import com.asksven.android.common.privateapiproxies.SensorUsage;
 import com.asksven.android.common.privateapiproxies.StatElement;
-import com.asksven.android.common.privateapiproxies.Wakelock;
 import com.asksven.android.common.utils.DataStorage;
 import com.asksven.android.common.utils.DateUtils;
 import com.asksven.android.common.utils.GenericLogger;
@@ -302,7 +302,7 @@ public class StatsProvider
 		}
 		//Collections.sort(myAlarms);
 
-		ArrayList<Alarm> myRetAlarms = new ArrayList<Alarm>();
+		ArrayList<AlarmStat> myRetAlarms = new ArrayList<AlarmStat>();
 		// if we are using custom ref. always retrieve "stats current"
 
 		// sort @see
@@ -340,7 +340,7 @@ public class StatsProvider
 
 		for (int i = 0; i < myAlarms.size(); i++)
 		{
-			Alarm alarm = ((Alarm) myAlarms.get(i)).clone();
+			AlarmStat alarm = ((AlarmStat) myAlarms.get(i)).clone();
 			if ((!bFilter) || ((alarm.getWakeups()) > 0))
 			{
 
@@ -429,7 +429,7 @@ public class StatsProvider
 			}
 		}
 		
-		ArrayList<Alarm> myRetAlarms = new ArrayList<Alarm>();
+		ArrayList<AlarmStat> myRetAlarms = new ArrayList<AlarmStat>();
 		// if we are using custom ref. always retrieve "stats current"
 
 		// sort @see
@@ -438,7 +438,7 @@ public class StatsProvider
 		long elapsedRealtime = SystemClock.elapsedRealtime();
 		for (int i = 0; i < myAlarms.size(); i++)
 		{
-			Alarm alarm = (Alarm) myAlarms.get(i);
+			AlarmStat alarm = (AlarmStat) myAlarms.get(i);
 			if (alarm != null)
 			{
 				if ((!bFilter) || ((alarm.getWakeups()) > 0))
@@ -673,7 +673,7 @@ public class StatsProvider
 		}
 
 		ArrayList<StatElement> myProcesses = null;
-		ArrayList<Process> myRetProcesses = new ArrayList<Process>();
+		ArrayList<ProcessStat> myRetProcesses = new ArrayList<ProcessStat>();
 
 		if ((refTo.m_refProcesses != null) && (!refTo.m_refProcesses.isEmpty()))
 		{
@@ -720,7 +720,7 @@ public class StatsProvider
 		long total = 0;
 		for (int i = 0; i < myProcesses.size(); i++)
 		{
-			Process ps = ((Process) myProcesses.get(i)).clone();
+			ProcessStat ps = ((ProcessStat) myProcesses.get(i)).clone();
 			if ((!bFilter) || ((ps.getSystemTime() + ps.getUserTime()) > 0))
 			{
 				ps.substractFromRef(refFrom.m_refProcesses);
@@ -736,7 +736,7 @@ public class StatsProvider
 		}
 
 		// sort by Duration
-		Comparator<Process> myCompTime = new Process.ProcessTimeComparator();
+		Comparator<ProcessStat> myCompTime = new ProcessStat.ProcessTimeComparator();
 		Collections.sort(myRetProcesses, myCompTime);
 
 		for (int i = 0; i < myRetProcesses.size(); i++)
@@ -761,7 +761,7 @@ public class StatsProvider
 		Context ctx = BbsApplication.getAppContext();
 
 		ArrayList<StatElement> myProcesses = null;
-		ArrayList<Process> myRetProcesses = new ArrayList<Process>();
+		ArrayList<ProcessStat> myRetProcesses = new ArrayList<ProcessStat>();
 
 		if ( !SysUtils.hasBatteryStatsPermission(ctx) )
 		{
@@ -787,7 +787,7 @@ public class StatsProvider
 		long total = 0;
 		for (int i = 0; i < myProcesses.size(); i++)
 		{
-			Process ps = (Process) myProcesses.get(i);
+			ProcessStat ps = (ProcessStat) myProcesses.get(i);
 			if ((!bFilter) || ((ps.getSystemTime() + ps.getUserTime()) > 0))
 			{
 				total += ps.getSystemTime() + ps.getSystemTime();
@@ -796,7 +796,7 @@ public class StatsProvider
 		}
 		
 		// sort by Duration
-		Comparator<Process> myCompTime = new Process.ProcessTimeComparator();
+		Comparator<ProcessStat> myCompTime = new ProcessStat.ProcessTimeComparator();
 		Collections.sort(myRetProcesses, myCompTime);
 
 		if (LogSettings.DEBUG)
@@ -864,7 +864,7 @@ public class StatsProvider
 			return myStats;
 		}
 
-		ArrayList<Wakelock> myRetWakelocks = new ArrayList<Wakelock>();
+		ArrayList<WakelockStat> myRetWakelocks = new ArrayList<WakelockStat>();
 
 		String strCurrent = myWakelocks.toString();
 
@@ -905,7 +905,7 @@ public class StatsProvider
 
 		for (int i = 0; i < myWakelocks.size(); i++)
 		{
-			Wakelock wl = ((Wakelock) myWakelocks.get(i)).clone();
+			WakelockStat wl = ((WakelockStat) myWakelocks.get(i)).clone();
 			if ((!bFilter) || ((wl.getDuration() / 1000) > 0))
 			{
 				// we must distinguish two situations
@@ -940,12 +940,12 @@ public class StatsProvider
 		{
 		case 0:
 			// by Duration
-			Comparator<Wakelock> myCompTime = new Wakelock.WakelockTimeComparator();
+			Comparator<WakelockStat> myCompTime = new WakelockStat.WakelockTimeComparator();
 			Collections.sort(myRetWakelocks, myCompTime);
 			break;
 		case 1:
 			// by Count
-			Comparator<Wakelock> myCompCount = new Wakelock.WakelockCountComparator();
+			Comparator<WakelockStat> myCompCount = new WakelockStat.WakelockCountComparator();
 			Collections.sort(myRetWakelocks, myCompCount);
 			break;
 		}
@@ -988,7 +988,7 @@ public class StatsProvider
 				statsType, iPctType);
 
 
-		ArrayList<Wakelock> myRetWakelocks = new ArrayList<Wakelock>();
+		ArrayList<WakelockStat> myRetWakelocks = new ArrayList<WakelockStat>();
 
 
 		// sort @see
@@ -997,7 +997,7 @@ public class StatsProvider
 
 		for (int i = 0; i < myWakelocks.size(); i++)
 		{
-			Wakelock wl = (Wakelock) myWakelocks.get(i);
+			WakelockStat wl = (WakelockStat) myWakelocks.get(i);
 			if ((!bFilter) || ((wl.getDuration() / 1000) > 0))
 			{
 				myRetWakelocks.add(wl);
@@ -1014,12 +1014,12 @@ public class StatsProvider
 		{
 		case 0:
 			// by Duration
-			Comparator<Wakelock> myCompTime = new Wakelock.WakelockTimeComparator();
+			Comparator<WakelockStat> myCompTime = new WakelockStat.WakelockTimeComparator();
 			Collections.sort(myRetWakelocks, myCompTime);
 			break;
 		case 1:
 			// by Count
-			Comparator<Wakelock> myCompCount = new Wakelock.WakelockCountComparator();
+			Comparator<WakelockStat> myCompCount = new WakelockStat.WakelockCountComparator();
 			Collections.sort(myRetWakelocks, myCompCount);
 			break;
 		}

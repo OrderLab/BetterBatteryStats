@@ -56,14 +56,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asksven.android.common.kernelutils.AlarmsDumpsys;
+import com.asksven.android.common.privateapiproxies.AlarmStat;
 import com.asksven.android.common.privateapiproxies.NativeKernelWakelock;
 import com.asksven.android.common.kernelutils.State;
 import com.asksven.android.common.nameutils.UidNameResolver;
-import com.asksven.android.common.privateapiproxies.Alarm;
 import com.asksven.android.common.privateapiproxies.AlarmItem;
 import com.asksven.android.common.privateapiproxies.Misc;
 import com.asksven.android.common.privateapiproxies.NetworkUsage;
-import com.asksven.android.common.privateapiproxies.Process;
+import com.asksven.android.common.privateapiproxies.ProcessStat;
 import com.asksven.android.common.privateapiproxies.SensorUsage;
 import com.asksven.android.common.privateapiproxies.SensorUsageItem;
 import com.asksven.android.common.privateapiproxies.StatElement;
@@ -107,7 +108,7 @@ public class StatsAdapter extends BaseAdapter
 		            m_maxValue = Math.max(m_maxValue, g.getMaxValue());
 		        }
         	}
-        	else if (m_listData.get(0) instanceof Alarm)
+        	else if (m_listData.get(0) instanceof AlarmStat)
         	{
 		        for (int i = 0; i < m_listData.size(); i++)
 		        {
@@ -130,7 +131,7 @@ public class StatsAdapter extends BaseAdapter
 		        }
         	}
 
-        	else if (m_listData.get(0) instanceof Process)
+        	else if (m_listData.get(0) instanceof ProcessStat)
         	{
 	        	StatElement g = m_listData.get(0);
 	        	
@@ -169,7 +170,7 @@ public class StatsAdapter extends BaseAdapter
     	m_timeSince = sinceMs;
     	if ((m_listData == null) || (m_listData.isEmpty())) return;
     	
-    	if (!((m_listData.get(0) instanceof Process) || (m_listData.get(0) instanceof NetworkUsage) || (m_listData.get(0) instanceof Alarm)))
+    	if (!((m_listData.get(0) instanceof ProcessStat) || (m_listData.get(0) instanceof NetworkUsage) || (m_listData.get(0) instanceof AlarmStat)))
     	{
     		m_maxValue = m_timeSince;
     	}
@@ -224,7 +225,7 @@ public class StatsAdapter extends BaseAdapter
 		// We need to handle an exception here: Sensors do not have a name so we use the fqn instead
         if (entry instanceof SensorUsage)
         {
-        	tvName.setText(entry.getFqn(UidNameResolver.getInstance()));
+        	tvName.setText(entry.getFqn(UidNameResolver.getInstance(m_context)));
         	
         }
         else
@@ -238,12 +239,12 @@ public class StatsAdapter extends BaseAdapter
         iconKb.setVisibility(View.INVISIBLE);
 
         TextView tvFqn = (TextView) convertView.findViewById(R.id.TextViewFqn);
-        tvFqn.setText(entry.getFqn(UidNameResolver.getInstance()));
+        tvFqn.setText(entry.getFqn(UidNameResolver.getInstance(m_context)));
 
         TextView tvData = (TextView) convertView.findViewById(R.id.TextViewData);
 
         // for alarms the values is wakeups per hour so we need to take the time as reference for the text
-        if (entry instanceof Alarm)
+        if (entry instanceof AlarmStat)
         {
         	tvData.setText(entry.getData((long)m_timeSince));
         }
@@ -335,8 +336,8 @@ public class StatsAdapter extends BaseAdapter
 //        }
 
         // show / hide fqn text
-        if ((entry instanceof Process) || (entry instanceof State) || (entry instanceof Misc)
-        		|| (entry instanceof NativeKernelWakelock) || (entry instanceof Alarm) || (entry instanceof SensorUsage))
+        if ((entry instanceof ProcessStat) || (entry instanceof State) || (entry instanceof Misc)
+        		|| (entry instanceof NativeKernelWakelock) || (entry instanceof AlarmStat) || (entry instanceof SensorUsage))
         {
         	myFqnLayout.setVisibility(View.GONE);
         }
@@ -355,14 +356,14 @@ public class StatsAdapter extends BaseAdapter
         else
         {
         	iconView.setVisibility(View.VISIBLE); 
-        	iconView.setImageDrawable(entry.getIcon(UidNameResolver.getInstance()));
+        	iconView.setImageDrawable(entry.getIcon(UidNameResolver.getInstance(m_context)));
 	        // set a click listener for the list
 	        iconView.setOnClickListener(new OnPackageClickListener(position));
 
         }
         
         // add on click listener for the list entry if details are availble
-        if ( (entry instanceof Alarm) || (entry instanceof NativeKernelWakelock) || (entry instanceof SensorUsage))
+        if ( (entry instanceof AlarmStat) || (entry instanceof NativeKernelWakelock) || (entry instanceof SensorUsage))
         {
         	convertView.setOnClickListener(new OnItemClickListener(position));
         }
@@ -390,7 +391,7 @@ public class StatsAdapter extends BaseAdapter
         	StatElement entry = (StatElement) getItem(m_iPosition);
         	
         	Context ctx = arg0.getContext();
-        	if (entry.getIcon(UidNameResolver.getInstance()) == null)
+        	if (entry.getIcon(UidNameResolver.getInstance(m_context)) == null)
         	{
         		return;
         	}
@@ -431,7 +432,7 @@ public class StatsAdapter extends BaseAdapter
 	        	dialog.setContentView(R.layout.details_dialog);
 	        	
 	        	TextView dialogTitle = (TextView) dialog.findViewById(R.id.dialog_title);
-	        	dialogTitle.setText(entry.getFqn(UidNameResolver.getInstance()));
+	        	dialogTitle.setText(entry.getFqn(UidNameResolver.getInstance(m_context)));
 	        	TextView title = (TextView) dialog.findViewById(R.id.title);
 	        	TextView text = (TextView) dialog.findViewById(R.id.text);
 	        	title.setText(entry.getData((long)m_timeSince));
@@ -452,9 +453,9 @@ public class StatsAdapter extends BaseAdapter
 	        	dialog.show();       	
 	        }
 
-        	if (entry instanceof Alarm)
+        	if (entry instanceof AlarmStat)
         	{
-	        	Alarm alarmEntry = (Alarm) getItem(m_iPosition);
+	        	AlarmStat alarmEntry = (AlarmStat) getItem(m_iPosition);
 	            
 	        	Dialog dialog = new Dialog(m_context);
 	        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

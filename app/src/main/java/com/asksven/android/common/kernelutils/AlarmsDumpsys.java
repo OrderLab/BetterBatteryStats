@@ -15,7 +15,7 @@ import android.util.Log;
 //import com.asksven.android.contrib.Shell;
 import com.asksven.android.common.NonRootShell;
 import com.asksven.android.common.RootShell;
-import com.asksven.android.common.privateapiproxies.Alarm;
+import com.asksven.android.common.privateapiproxies.AlarmStat;
 import com.asksven.android.common.privateapiproxies.StatElement;
 
 /**
@@ -105,7 +105,7 @@ public class AlarmsDumpsys
 				Pattern numberPattern	= Pattern.compile("\\s\\s(\\d+) alarms: (flg=[a-z0-9]+\\s){0,1}(act|cmp)=([A-Za-z0-9\\-\\_\\.\\{\\}\\/\\{\\}\\$]+)");
 				
 				myAlarms = new ArrayList<StatElement>();
-				Alarm myAlarm = null;
+				AlarmStat myAlarm = null;
 				
 				// process the file
 				for (int i=0; i < res.size(); i++)
@@ -131,7 +131,7 @@ public class AlarmsDumpsys
 								}
 								// we are interested in the first token 
 								String strPackageName = mPackage.group(1);
-								myAlarm = new Alarm(strPackageName);
+								myAlarm = new AlarmStat(strPackageName);
 							}
 							catch (Exception e)
 							{
@@ -206,7 +206,7 @@ public class AlarmsDumpsys
 			else
 			{
 				myAlarms = new ArrayList<StatElement>();
-				Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+				AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 				myAlarm.setWakeups(1);
 				myAlarms.add(myAlarm);
 			}
@@ -214,7 +214,7 @@ public class AlarmsDumpsys
 		else
 		{
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+			AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 			myAlarm.setWakeups(1);
 			myAlarms.add(myAlarm);
 
@@ -223,7 +223,7 @@ public class AlarmsDumpsys
 		
 		for (int i=0; i < myAlarms.size(); i++)
 		{
-			((Alarm)myAlarms.get(i)).setTotalCount(nTotalCount);
+			((AlarmStat)myAlarms.get(i)).setTotalCount(nTotalCount);
 		}
 		return myAlarms;
 	}
@@ -246,7 +246,7 @@ public class AlarmsDumpsys
 			Pattern numberPattern	= Pattern.compile("\\s\\s\\s\\s\\+([0-9a-z]+)ms (\\d+) wakes (\\d+) alarms: (act|cmp)=([A-Za-z0-9\\-\\_\\.\\$\\{\\}]+)");
 			
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = null;
+			AlarmStat myAlarm = null;
 			
 			// process the file
 			for (int i=0; i < res.size(); i++)
@@ -271,7 +271,7 @@ public class AlarmsDumpsys
 							}
 							// we are interested in the first token 
 							String strPackageName = mPackage.group(1);
-							myAlarm = new Alarm(strPackageName);
+							myAlarm = new AlarmStat(strPackageName);
 
 							String strWakeups = mPackage.group(3);
 							long nWakeups = Long.parseLong(strWakeups);
@@ -327,7 +327,7 @@ public class AlarmsDumpsys
 		else
 		{
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+			AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 			myAlarm.setWakeups(1);
 			myAlarms.add(myAlarm);
 
@@ -336,7 +336,7 @@ public class AlarmsDumpsys
 		
 		for (int i=0; i < myAlarms.size(); i++)
 		{
-			Alarm myAlarm = (Alarm)myAlarms.get(i);
+			AlarmStat myAlarm = (AlarmStat) myAlarms.get(i);
 			if (myAlarm != null)
 			{
 				myAlarm.setTotalCount(nTotalCount);
@@ -362,7 +362,7 @@ public class AlarmsDumpsys
 			Pattern numberPattern	= Pattern.compile("\\s\\s\\s\\s\\+([0-9a-z]+)ms (\\d+) wakes (\\d+) alarms: (act|cmp)=(.*)");
 			
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = null;
+			AlarmStat myAlarm = null;
 			
 			// process the file
 			for (int i=0; i < res.size(); i++)
@@ -387,7 +387,7 @@ public class AlarmsDumpsys
 							}
 							// we are interested in the first token 
 							String strPackageName = mPackage.group(1);
-							myAlarm = new Alarm(strPackageName);
+							myAlarm = new AlarmStat(strPackageName);
 
 							String strWakeups = mPackage.group(3);
 							long nWakeups = Long.parseLong(strWakeups);
@@ -443,7 +443,7 @@ public class AlarmsDumpsys
 		else
 		{
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+			AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 			myAlarm.setWakeups(1);
 			myAlarms.add(myAlarm);
 
@@ -452,7 +452,7 @@ public class AlarmsDumpsys
 		
 		for (int i=0; i < myAlarms.size(); i++)
 		{
-			Alarm myAlarm = (Alarm)myAlarms.get(i);
+			AlarmStat myAlarm = (AlarmStat) myAlarms.get(i);
 			if (myAlarm != null)
 			{
 				myAlarm.setTotalCount(nTotalCount);
@@ -479,7 +479,7 @@ public class AlarmsDumpsys
 			Pattern numberPattern	= Pattern.compile("\\s\\s\\s\\s\\+([0-9a-z]+)ms (\\d+) wakes (\\d+) alarms: (\\*alarm\\*|\\*walarm\\*):(.*)");
 			
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = null;
+			AlarmStat myAlarm = null;
 			
 			// process the file
 			for (int i=0; i < res.size(); i++)
@@ -504,7 +504,7 @@ public class AlarmsDumpsys
 							}
 							// we are interested in the first token 
 							String strPackageName = mPackage.group(1);
-							myAlarm = new Alarm(strPackageName);
+							myAlarm = new AlarmStat(strPackageName);
 
 							String strWakeups = mPackage.group(3);
 							long nWakeups = Long.parseLong(strWakeups);
@@ -560,7 +560,7 @@ public class AlarmsDumpsys
 		else
 		{
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+			AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 			myAlarm.setWakeups(1);
 			myAlarms.add(myAlarm);
 
@@ -569,7 +569,7 @@ public class AlarmsDumpsys
 		
 		for (int i=0; i < myAlarms.size(); i++)
 		{
-			Alarm myAlarm = (Alarm)myAlarms.get(i);
+			AlarmStat myAlarm = (AlarmStat) myAlarms.get(i);
 			if (myAlarm != null)
 			{
 				myAlarm.setTotalCount(nTotalCount);
@@ -597,7 +597,7 @@ public class AlarmsDumpsys
 			Pattern detailsPattern	= Pattern.compile("\\s\\s\\s\\s\\s\\s(\\*alarm\\*|\\*walarm\\*):(.*)");
 			
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = null;
+			AlarmStat myAlarm = null;
 			long nNumber = 0;
 			
 			// process the file
@@ -625,7 +625,7 @@ public class AlarmsDumpsys
 							}
 							// we are interested in the first token 
 							String strPackageName = mPackage.group(1);
-							myAlarm = new Alarm(strPackageName);
+							myAlarm = new AlarmStat(strPackageName);
 
 							String strWakeups = mPackage.group(3);
 							long nWakeups = Long.parseLong(strWakeups);
@@ -704,7 +704,7 @@ public class AlarmsDumpsys
 		else
 		{
 			myAlarms = new ArrayList<StatElement>();
-			Alarm myAlarm = new Alarm(PERMISSION_DENIED);
+			AlarmStat myAlarm = new AlarmStat(PERMISSION_DENIED);
 			myAlarm.setWakeups(1);
 			myAlarms.add(myAlarm);
 
@@ -713,7 +713,7 @@ public class AlarmsDumpsys
 		
 		for (int i=0; i < myAlarms.size(); i++)
 		{
-			Alarm myAlarm = (Alarm)myAlarms.get(i);
+			AlarmStat myAlarm = (AlarmStat) myAlarms.get(i);
 			if (myAlarm != null)
 			{
 				myAlarm.setTotalCount(nTotalCount);

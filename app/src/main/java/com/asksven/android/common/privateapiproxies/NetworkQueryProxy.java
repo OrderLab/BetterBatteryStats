@@ -38,76 +38,69 @@ import com.asksven.android.common.nameutils.UidNameResolver;
 import com.asksven.android.common.utils.DateUtils;
 
 
-
 /**
  * A proxy to the non-public API BatteryStats
  * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/2.3.3_r1/android/os/BatteryStats.java/?v=source
- * @author sven
  *
+ * @author sven
  */
-public class NetworkQueryProxy
-{
-	/*
-	 * Instance of the BatteryStatsImpl
-	 */
-	private Object m_Instance = null;
-	@SuppressWarnings("rawtypes")
-	private Class m_ClassDefinition = null;
-	
-	private static final String TAG = "NetworkQueryProxy";
-	/*
-	 * The UID stats are kept here as their methods / data can not be accessed
-	 * outside of this class due to non-public types (Uid, Proc, etc.)
-	 */
-	private SparseArray<? extends Object> m_uidStats = null;
-	
-	/** 
-	 * An instance to the UidNameResolver 
-	 */
-	private UidNameResolver m_nameResolver;
+public class NetworkQueryProxy {
+    /*
+     * Instance of the BatteryStatsImpl
+     */
+    private Object m_Instance = null;
+    @SuppressWarnings("rawtypes")
+    private Class m_ClassDefinition = null;
+
+    private static final String TAG = "NetworkQueryProxy";
+    /*
+     * The UID stats are kept here as their methods / data can not be accessed
+     * outside of this class due to non-public types (Uid, Proc, etc.)
+     */
+    private SparseArray<? extends Object> m_uidStats = null;
 
     /**
-	 * Default cctor
-	 */
-	public NetworkQueryProxy(Context context)
-	{
-				
-		try
-		{
-	          ClassLoader cl = context.getClassLoader();
-	          
+     * An instance to the UidNameResolver
+     */
+    private UidNameResolver m_nameResolver;
+
+    /**
+     * Default cctor
+     */
+    public NetworkQueryProxy(Context context) {
+
+        try {
+            ClassLoader cl = context.getClassLoader();
+
 //	          ActivityManager am = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
 //	          am.restartPackage("com.android.phone");
-	          Class networkQueryServiceClassDefinition = cl.loadClass("com.android.phone.NetworkQueryService");
-	          
-	          // get the IBinder to the "batteryinfo" service
-	          @SuppressWarnings("rawtypes")
-			  Class serviceManagerClass = cl.loadClass("android.os.ServiceManager");
-	          
-	          // parameter types
-	          @SuppressWarnings("rawtypes")
-			  Class[] paramTypesGetService= new Class[1];
-	          paramTypesGetService[0]= String.class;
-	          
-	          @SuppressWarnings("unchecked")
-			  Method methodGetService = serviceManagerClass.getMethod("getService", paramTypesGetService);
-	          
-	          // parameters
-	          Object[] paramsGetService= new Object[1];
-	          paramsGetService[0] = "networkquery";
-	     
-	          IBinder serviceBinder = (IBinder) methodGetService.invoke(serviceManagerClass, paramsGetService); 
+            Class networkQueryServiceClassDefinition = cl.loadClass("com.android.phone.NetworkQueryService");
 
-	          context.startService(new Intent(context, networkQueryServiceClassDefinition));
-	          if (serviceBinder == null)
-	          {
-	        	  Log.e(TAG, "no binder to networkquery found");
-	        	  
-	          }
-	          else
-	          {
-	        	  Log.e(TAG, "binder to networkquery acquired");
-	          }
+            // get the IBinder to the "batteryinfo" service
+            @SuppressWarnings("rawtypes")
+            Class serviceManagerClass = cl.loadClass("android.os.ServiceManager");
+
+            // parameter types
+            @SuppressWarnings("rawtypes")
+            Class[] paramTypesGetService = new Class[1];
+            paramTypesGetService[0] = String.class;
+
+            @SuppressWarnings("unchecked")
+            Method methodGetService = serviceManagerClass.getMethod("getService", paramTypesGetService);
+
+            // parameters
+            Object[] paramsGetService = new Object[1];
+            paramsGetService[0] = "networkquery";
+
+            IBinder serviceBinder = (IBinder) methodGetService.invoke(serviceManagerClass, paramsGetService);
+
+            context.startService(new Intent(context, networkQueryServiceClassDefinition));
+            if (serviceBinder == null) {
+                Log.e(TAG, "no binder to networkquery found");
+
+            } else {
+                Log.e(TAG, "binder to networkquery acquired");
+            }
 //	          // now we have a binder. Let's us that on IBatteryStats.Stub.asInterface
 //	          // to get an IBatteryStats
 //	          // Note the $-syntax here as Stub is a nested class
@@ -149,13 +142,11 @@ public class NetworkQueryProxy
 //			  Parcelable.Creator batteryStatsImpl_CREATOR = (Parcelable.Creator) creatorField.get(batteryStatsImpl); 
 //	          
 //	          m_Instance = batteryStatsImpl_CREATOR.createFromParcel(parcel);        
-	    }
-		catch( Exception e )
-		{
-			Log.e("TAG", "An exception occured in NetworkQueryProxy(). Message: " + e.getMessage() + ", cause: " + e.getCause().getMessage());
-	    	m_Instance = null;
-	    }    
-	}
-	
+        } catch (Exception e) {
+            Log.e("TAG", "An exception occured in NetworkQueryProxy(). Message: " + e.getMessage() + ", cause: " + e.getCause().getMessage());
+            m_Instance = null;
+        }
+    }
+
 
 }

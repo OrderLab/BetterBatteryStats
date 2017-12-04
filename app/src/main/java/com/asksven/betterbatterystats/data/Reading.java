@@ -37,17 +37,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.asksven.android.common.RootShell;
+import com.asksven.android.common.privateapiproxies.AlarmStat;
 import com.asksven.android.common.privateapiproxies.NativeKernelWakelock;
 import com.asksven.android.common.kernelutils.State;
 import com.asksven.android.common.kernelutils.Wakelocks;
 import com.asksven.android.common.nameutils.UidNameResolver;
-import com.asksven.android.common.privateapiproxies.Alarm;
 import com.asksven.android.common.privateapiproxies.Misc;
 import com.asksven.android.common.privateapiproxies.NetworkUsage;
+import com.asksven.android.common.privateapiproxies.ProcessStat;
 import com.asksven.android.common.privateapiproxies.SensorUsage;
 import com.asksven.android.common.privateapiproxies.StatElement;
-import com.asksven.android.common.privateapiproxies.Wakelock;
-import com.asksven.android.common.privateapiproxies.Process;
+import com.asksven.android.common.privateapiproxies.WakelockStat;
 import com.asksven.android.common.utils.DataStorage;
 import com.asksven.android.common.utils.DateUtils;
 import com.asksven.android.common.utils.SysUtils;
@@ -193,7 +193,7 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 				
 				if (tempStats.get(i) instanceof Misc)
 				{
@@ -209,11 +209,11 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
-				if (tempStats.get(i) instanceof Wakelock)
+				if (tempStats.get(i) instanceof WakelockStat)
 				{
-					partialWakelockStats.add((Wakelock) tempStats.get(i));
+					partialWakelockStats.add((WakelockStat) tempStats.get(i));
 				}
 				else
 				{
@@ -225,7 +225,7 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
 				if (tempStats.get(i) instanceof NativeKernelWakelock)
 				{
@@ -241,11 +241,11 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
-				if (tempStats.get(i) instanceof Process)
+				if (tempStats.get(i) instanceof ProcessStat)
 				{
-					processStats.add((Process) tempStats.get(i));
+					processStats.add((ProcessStat) tempStats.get(i));
 				}
 				else
 				{
@@ -257,11 +257,11 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
-				if (tempStats.get(i) instanceof Alarm)
+				if (tempStats.get(i) instanceof AlarmStat)
 				{
-					alarmStats.add((Alarm) tempStats.get(i));
+					alarmStats.add((AlarmStat) tempStats.get(i));
 				}
 				else
 				{
@@ -273,7 +273,7 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
 				if (tempStats.get(i) instanceof NetworkUsage)
 				{
@@ -289,7 +289,7 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
 				if (tempStats.get(i) instanceof State)
 				{
@@ -305,7 +305,7 @@ public class Reading implements Serializable
 			for (int i = 0; i < tempStats.size(); i++)
 			{
 				// make sure to load all data (even the lazy loaded one)
-				tempStats.get(i).getFqn(UidNameResolver.getInstance());
+				tempStats.get(i).getFqn(UidNameResolver.getInstance(context));
 
 				if (tempStats.get(i) instanceof SensorUsage)
 				{
@@ -579,7 +579,7 @@ public class Reading implements Serializable
 			{
 				for (int i = 0; i < myList.size(); i++)
 				{
-					out.write(myList.get(i).getDumpData(UidNameResolver.getInstance(), totalTime) + "\n");
+					out.write(myList.get(i).getDumpData(UidNameResolver.getInstance(context), totalTime) + "\n");
 		
 				}
 			}
